@@ -8,6 +8,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -42,7 +44,7 @@
                <children>
                   <BorderPane layoutX="48.0" layoutY="87.0" prefHeight="373.0" prefWidth="296.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <top>
-                        <Label text="Nuevo libro" BorderPane.alignment="CENTER">
+                        <Label text="Nuevo libro" textAlignment="CENTER" BorderPane.alignment="CENTER">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
@@ -85,7 +87,32 @@
                   </BorderPane>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="48.0" layoutY="87.0" prefHeight="373.0" prefWidth="296.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <Label text="Listado de libros" BorderPane.alignment="CENTER">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <BorderPane.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </BorderPane.margin>
+                        </Label>
+                     </top>
+                     <center>
+                        <TableView fx:id="tableLibros" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn fx:id="columnTitulo" prefWidth="69.0" text="Título" />
+                            <TableColumn fx:id="columnEditorial" prefWidth="81.0" text="Editorial" />
+                              <TableColumn fx:id="columnAutor" prefWidth="73.0" text="Autor/a" />
+                              <TableColumn fx:id="columnPaginas" prefWidth="72.0" text="Páginas" />
+                          </columns>
+                        </TableView>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
         </items>
       </SplitPane>
    </center>
