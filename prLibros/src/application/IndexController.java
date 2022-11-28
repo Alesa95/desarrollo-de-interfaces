@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
@@ -43,6 +45,9 @@ public class IndexController {
 	@FXML
 	private Button btnAnadir;
 	
+	@FXML
+	private Button btnBorrar;
+	
 	private ObservableList<Libro> listaLibros =
 		FXCollections.observableArrayList(
 				new Libro("La Biblia", "Planeta", "Jesús", 500)
@@ -72,26 +77,54 @@ public class IndexController {
 	@FXML
 	public void anadirLibro(ActionEvent event) {
 		
-		if (esNumero(txtPaginas.getText())) {
-			Libro l = new Libro(
-					txtTitulo.getText(),
-					cbEditorial.getValue().toString(),
-					txtAutor.getText(),
-					Integer.parseInt(txtPaginas.getText())
-			);
+		if (txtPaginas.getText().isEmpty() ||
+				cbEditorial.getSelectionModel().isEmpty() ||
+				txtAutor.getText().isEmpty() ||
+				txtPaginas.getText().isEmpty()) {
 				
-			listaLibros.add(l);
+			Alert alerta = new Alert(AlertType.WARNING);
+			alerta.setTitle("Información incompleta");
+			alerta.setHeaderText("Falta información del libro");
+			alerta.setContentText("Por favor, introduce todos los campos");
+			alerta.showAndWait();
 			
-			txtTitulo.clear();
-			cbEditorial.getSelectionModel().clearSelection();
-			txtAutor.clear();
-			txtPaginas.clear(); 
+		} else {
+			if (esNumero(txtPaginas.getText())) {
+				Libro l = new Libro(
+						txtTitulo.getText(),
+						cbEditorial.getValue().toString(),
+						txtAutor.getText(),
+						Integer.parseInt(txtPaginas.getText())
+				);
+					
+				listaLibros.add(l);
+				
+				txtTitulo.clear();
+				cbEditorial.getSelectionModel().clearSelection();
+				txtAutor.clear();
+				txtPaginas.clear();
+				
+			} else {
+				
+				Alert alerta = new Alert(AlertType.ERROR);
+				alerta.setTitle("Error al insertar");
+				alerta.setHeaderText
+					("No se ha introducido un número en las páginas");
+				alerta.setContentText
+					("Por favor, introduzca un número en las páginas");
+				alerta.showAndWait();
+			}
 		}
 	}
 	
 	@FXML
 	public void borrarLibro(ActionEvent event) { 
-		System.out.println("Borrando un libro");
+		
+		int indiceSeleccionado = tableLibros
+									.getSelectionModel()
+									.getSelectedIndex();
+		
+		tableLibros.getItems().remove(indiceSeleccionado);
 	}
 	
 	public boolean esNumero (String s) {
