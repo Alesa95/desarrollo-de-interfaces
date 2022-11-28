@@ -72,13 +72,34 @@ public class IndexController {
 	@FXML
 	public void anadirLibro(ActionEvent event) {
 		
-		Libro l = new Libro(
-			txtTitulo.getText(),
-			cbEditorial.getValue().toString(),
-			txtAutor.getText(),
-			Integer.parseInt(txtPaginas.getText())
-		);
-		
-		listaLibros.add(l);
+		if (esNumero(txtPaginas.getText())) {
+			Libro l = new Libro(
+					txtTitulo.getText(),
+					cbEditorial.getValue().toString(),
+					txtAutor.getText(),
+					Integer.parseInt(txtPaginas.getText())
+			);
+				
+			listaLibros.add(l);
+			
+			txtTitulo.clear();
+			cbEditorial.getSelectionModel().clearSelection();
+			txtAutor.clear();
+			txtPaginas.clear(); 
+		}
+	}
+	
+	@FXML
+	public void borrarLibro(ActionEvent event) { 
+		System.out.println("Borrando un libro");
+	}
+	
+	public boolean esNumero (String s) {
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }
