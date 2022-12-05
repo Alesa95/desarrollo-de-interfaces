@@ -1,5 +1,10 @@
 package application;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,7 +76,48 @@ public class IndexController {
 		columnAutor.setCellValueFactory(new PropertyValueFactory<>("autor"));
 		columnPaginas.setCellValueFactory(new PropertyValueFactory<>("paginas"));
 		
-		tableLibros.setItems(listaLibros); 
+		ObservableList listaLibrosBD = getLibrosBD();
+		
+		tableLibros.setItems(listaLibrosBD); 
+	}
+	
+	private ObservableList<Libro> getLibrosBD () {
+		
+		/*
+		 * Creamos la ObservableList donde almacenaremos
+		 * los libros obtenidos de la BD
+		 */
+		ObservableList<Libro> listaLibrosBD = 
+				FXCollections.observableArrayList();
+		
+		//	Nos conectamos a la BD
+		DatabaseConnection dbConnection = new DatabaseConnection();
+		Connection connection = dbConnection.getConnection();
+		
+		String query = "select * from libros";
+		try {
+			PreparedStatement ps = connection.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				Libro libro = new Libro(
+						rs.getString("titulo"),
+						rs.getString("editorial"),
+						rs.getString("autor"),
+						rs.getInt("paginas") 
+				);
+				listaLibrosBD.add(libro);
+			}
+			
+			//	Cerramos la conexión
+			connection.close();
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return listaLibrosBD;
 	}
 	
 	@FXML
@@ -124,7 +170,19 @@ public class IndexController {
 									.getSelectionModel()
 									.getSelectedIndex();
 		
-		tableLibros.getItems().remove(indiceSeleccionado);
+		System.out.println
+			("Índice a borrar: " + indiceSeleccionado);
+		
+		if (indiceSeleccionado <= -1) {
+			Alert alerta = new Alert(AlertType.ERROR);
+			alerta.setTitle("Error al borrar");
+			alerta.setHeaderText("No se ha seleccionado ningún libro a borrar");
+			alerta.setContentText("Por favor, selecciona un libro para borrarlo");
+			alerta.showAndWait();
+		} else {
+			tableLibros.getItems().remove(indiceSeleccionado);
+			tableLibros.getSelectionModel().clearSelection();  
+		}
 	}
 	
 	public boolean esNumero (String s) {
