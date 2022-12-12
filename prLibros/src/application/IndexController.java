@@ -54,9 +54,7 @@ public class IndexController {
 	private Button btnBorrar;
 	
 	private ObservableList<Libro> listaLibros =
-		FXCollections.observableArrayList(
-				new Libro("La Biblia", "Planeta", "Jesús", 500)
-		);
+		FXCollections.observableArrayList();
 	
 	public ObservableList<String> listaEditoriales = 
 		FXCollections.observableArrayList(
@@ -136,19 +134,43 @@ public class IndexController {
 			
 		} else {
 			if (esNumero(txtPaginas.getText())) {
-				Libro l = new Libro(
+				Libro libro = new Libro(
 						txtTitulo.getText(),
 						cbEditorial.getValue().toString(),
 						txtAutor.getText(),
 						Integer.parseInt(txtPaginas.getText())
 				);
-					
-				listaLibros.add(l);
 				
 				txtTitulo.clear();
 				cbEditorial.getSelectionModel().clearSelection();
 				txtAutor.clear();
 				txtPaginas.clear();
+				
+				//	Nos conectamos a la BD
+				DatabaseConnection dbConnection = new DatabaseConnection();
+				Connection connection = dbConnection.getConnection();
+				
+				try {
+					//	Aquí insertaremos en la BD
+					String query = "insert into libros "
+							+ "(titulo, editorial, autor, paginas) "
+							+ "VALUES (?, ?, ?, ?)";
+					PreparedStatement ps = connection.prepareStatement(query);
+					ps.setString(1, libro.getTitulo()); 
+					ps.setString(2, libro.getEditorial());
+					ps.setString(3, libro.getAutor());
+					ps.setInt(4, libro.getPaginas()); 
+					ps.executeUpdate();
+					
+					//	Cerramos la sesión
+					connection.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//	Después de insertar actualizamos la tabla
+				ObservableList listaLibrosBD = getLibrosBD();
+				tableLibros.setItems(listaLibrosBD); 
 				
 			} else {
 				
